@@ -1,21 +1,42 @@
+// ====================================================
+// mensagens.service.ts — Serviço de mensagens
+// Contém a lógica para criar e buscar mensagens na base de dados.
+// ====================================================
+
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Mensagem } from './entities/mensagem.entity';
+import { CreateMensagemDto } from './dto/create-mensagem.dto';
 
 @Injectable()
 export class MensagensService {
-  // Lista falsa de mensagens (depois vem da base de dados)
-  private mensagens = [
-    { id: 1, texto: 'Acidente na Av. de Roma', prioridade: 'alta' },
-    { id: 2, texto: 'Transito intenso na 2a Circular', prioridade: 'normal' },
-    { id: 3, texto: 'Avaria no autocarro 735', prioridade: 'alta' },
-  ];
+  // O TypeORM injeta aqui o "repositório" da tabela de mensagens
+  // Um repositório é como um ajudante que sabe fazer operações na tabela
+  // (inserir, buscar, apagar, etc.)
+  constructor(
+    @InjectRepository(Mensagem)
+    private readonly mensagemRepo: Repository<Mensagem>,
+  ) {}
 
-  // Devolve todas as mensagens
+  // Devolve todas as mensagens, ordenadas da mais recente para a mais antiga
   getAll() {
-    return this.mensagens;
+    return this.mensagemRepo.find({
+      order: { dataCriacao: 'DESC' },
+    });
   }
 
-  // Devolve uma mensagem por ID
+  // Devolve uma mensagem específica pelo seu id
   getById(id: number) {
-    return this.mensagens.find((m) => m.id === id);
+    return this.mensagemRepo.findOneBy({ id });
+  }
+
+  // Cria uma nova mensagem e guarda na base de dados
+  create(dados: CreateMensagemDto) {
+    // mensagemRepo.create() prepara o objeto (mas ainda não guarda)
+    const novaMensagem = this.mensagemRepo.create(dados);
+
+    // mensagemRepo.save() guarda efetivamente na base de dados
+    return this.mensagemRepo.save(novaMensagem);
   }
 }
