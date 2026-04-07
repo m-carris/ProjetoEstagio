@@ -51,12 +51,7 @@ O servidor fica disponível em **http://localhost:3000**
 | GET    | /api/mensagens/:id | Devolve uma mensagem pelo id | —                                                       |
 | POST   | /api/mensagens     | Cria uma nova mensagem       | `{ "texto": "...", "prioridade": "normal" ou "alta" }` |
 
-### Autenticação
 
-| Método | URL                | O que faz                        | Corpo do pedido (JSON)                                                                     |
-|--------|--------------------|----------------------------------|--------------------------------------------------------------------------------------------|
-| POST   | /api/auth/registar | Regista um novo utilizador       | `{ "nome": "...", "email": "...", "password": "...", "tipo": "coordenador" ou "operador" }` |
-| POST   | /api/auth/login    | Faz login e devolve um token JWT | `{ "email": "...", "password": "..." }`                                                    |
 
 ## Estrutura do projeto
 
