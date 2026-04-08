@@ -38,7 +38,7 @@ O editor de código que vamos usar.
 - Extensões recomendadas para instalar no VS Code:
   - **Portuguese (Portugal) Language Pack** — para ter o VS Code em português
   - **Prettier** — formata o código automaticamente
-  - **ESLint** — detecta erros no código
+  - **ESLint** — deteta erros no código
   - **Thunder Client** — para testar a API (como o Postman, mas dentro do VS Code)
 
 ### 2. Node.js
@@ -4711,7 +4711,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Criar um alarme para verificar mensagens periodicamente
 chrome.alarms.create('verificar-mensagens', {
-  periodInMinutes: 0.1, // A cada 6 segundos (0.1 minutos)
+  periodInMinutes: 0.1, // A cada 0.1 minutos (6 segundos)
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
