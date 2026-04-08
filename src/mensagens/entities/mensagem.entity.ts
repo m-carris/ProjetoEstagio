@@ -1,3 +1,9 @@
+// ============================================
+// CÓDIGO ORIGINAL — gerado por IA
+// Comentado para o guião de aprendizagem
+// Vais reescrever este ficheiro passo a passo!
+// ============================================
+/*
 // ====================================================
 // mensagem.entity.ts — Entidade (tabela) de mensagens
 // Uma "entidade" representa uma tabela na base de dados.
@@ -32,3 +38,5 @@ export class Mensagem {
   @CreateDateColumn()
   dataCriacao!: Date;
 }
+
+*/

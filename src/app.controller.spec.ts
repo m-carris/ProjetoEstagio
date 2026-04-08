@@ -1,3 +1,9 @@
+// ============================================
+// CÓDIGO ORIGINAL — gerado por IA
+// Comentado para o guião de aprendizagem
+// Vais reescrever este ficheiro passo a passo!
+// ============================================
+/*
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -22,3 +28,5 @@ describe('AppController', () => {
     });
   });
 });
+
+*/

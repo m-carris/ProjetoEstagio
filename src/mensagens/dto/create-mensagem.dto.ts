@@ -1,3 +1,9 @@
+// ============================================
+// CÓDIGO ORIGINAL — gerado por IA
+// Comentado para o guião de aprendizagem
+// Vais reescrever este ficheiro passo a passo!
+// ============================================
+/*
 // ====================================================
 // create-mensagem.dto.ts — DTO para criar uma mensagem
 // Um "DTO" (Data Transfer Object) define o formato dos dados
@@ -12,3 +18,5 @@ export class CreateMensagemDto {
   // A prioridade: 'normal' ou 'alta'
   prioridade!: 'normal' | 'alta';
 }
+
+*/

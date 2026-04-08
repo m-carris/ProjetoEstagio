@@ -1,3 +1,9 @@
+// ============================================
+// CÓDIGO ORIGINAL — gerado por IA
+// Comentado para o guião de aprendizagem
+// Vais reescrever este ficheiro passo a passo!
+// ============================================
+/*
 // ====================================================
 // mensagens.module.ts — Módulo de mensagens
 // Este módulo agrupa tudo o que tem a ver com mensagens:
@@ -20,3 +26,5 @@ import { MensagensService } from './mensagens.service';
   providers: [MensagensService],
 })
 export class MensagensModule {}
+
+*/

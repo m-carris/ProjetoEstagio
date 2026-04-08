@@ -2,168 +2,99 @@
 
 ## Ideia do Projeto
 
-Sistema de notificações em tempo real para uma empresa de transportes. Um **coordenador de tráfego** envia mensagens/avisos (ex: "Acidente na Av. de Roma, desviar linha 735") e todos os **operadores de tráfego** recebem essas mensagens instantaneamente no browser.
+Sistema de notificações em tempo real para uma empresa de transportes. Um coordenador de tráfego envia mensagens/avisos (ex: "Acidente na Av. de Roma, desviar linha 735") e todos os operadores de tráfego recebem essas mensagens no browser.
 
-O projeto completo tem 3 repositórios separados:
+O projeto completo tem 3 repositórios:
+- **Backend** (este) — NestJS + TypeORM + PostgreSQL + Docker — API REST que recebe, guarda e distribui mensagens
+- **PortalCoordenador** — Vue.js — onde o coordenador envia mensagens e vê o histórico
+- **ExtensaoChrome** — extensão de browser para os operadores receberem notificações
 
-| Repositório | Tecnologia | Função |
-|---|---|---|
-| **Backend** (este) | NestJS, TypeScript, TypeORM, PostgreSQL, Docker | API REST + WebSocket Server — recebe, guarda e distribui mensagens |
-| **PortalCoordenador** | Vue.js | Backoffice web onde o coordenador envia mensagens e vê o histórico |
-| **ExtensaoChrome** | JavaScript/TypeScript | Extensão de browser para operadores receberem notificações em tempo real |
+## Como correr
 
-## Como correr o projeto
+1. Ter Node.js 20+ e Docker instalados
+2. `docker compose up -d` — arranca o PostgreSQL na porta 5432
+3. `npm install` — instala dependências
+4. `npm run start:dev` — servidor em http://localhost:3000
 
-### 1. Ter tudo instalado
+## Endpoints
 
-- **Node.js 20** (ou superior)
-- **Docker** (para a base de dados PostgreSQL)
+GET / — mensagem de boas-vindas
+GET /api/mensagens — lista todas as mensagens
+GET /api/mensagens/:id — uma mensagem pelo id
+POST /api/mensagens — cria mensagem (body: `{"texto": "...", "prioridade": "normal" ou "alta"}`)
 
-### 2. Arrancar a base de dados
-
-```bash
-docker compose up -d
-```
-
-Isto cria um container Docker com PostgreSQL na porta 5432, com a base de dados `notificacoes_db`.
-
-### 3. Instalar as dependências
-
-```bash
-npm install
-```
-
-### 4. Arrancar o servidor
-
-```bash
-npm run start:dev
-```
-
-O servidor fica disponível em **http://localhost:3000**
-
-## Endpoints disponíveis
-
-### Mensagens
-
-| Método | URL                | O que faz                    | Corpo do pedido (JSON)                                  |
-|--------|--------------------|------------------------------|---------------------------------------------------------|
-| GET    | /api/mensagens     | Devolve todas as mensagens   | —                                                       |
-| GET    | /api/mensagens/:id | Devolve uma mensagem pelo id | —                                                       |
-| POST   | /api/mensagens     | Cria uma nova mensagem       | `{ "texto": "...", "prioridade": "normal" ou "alta" }` |
-
-### Autenticação
-
-| Método | URL                | O que faz                        | Corpo do pedido (JSON)                                                                     |
-|--------|--------------------|----------------------------------|--------------------------------------------------------------------------------------------|
-| POST   | /api/auth/registar | Regista um novo utilizador       | `{ "nome": "...", "email": "...", "password": "...", "tipo": "coordenador" ou "operador" }` |
-| POST   | /api/auth/login    | Faz login e devolve um token JWT | `{ "email": "...", "password": "..." }`                                                    |
-
-## Estrutura do projeto
+## Estrutura
 
 ```
 src/
-  main.ts                          ← Ponto de entrada (arranca o servidor na porta 3000)
-  app.module.ts                    ← Módulo principal (liga a BD e importa todos os módulos)
-  app.controller.ts                ← Controller da raiz (GET / → mensagem de boas-vindas)
-  app.service.ts                   ← Serviço da raiz (devolve texto de boas-vindas)
+  main.ts               — arranca o servidor na porta 3000
+  app.module.ts          — módulo principal, liga a BD e importa módulos
+  app.controller.ts      — GET / (boas-vindas)
+  app.service.ts         — lógica do controller raiz
   mensagens/
-    mensagens.module.ts            ← Módulo de mensagens (agrupa controller + service + entity)
-    mensagens.controller.ts        ← Recebe pedidos HTTP de mensagens (GET e POST)
-    mensagens.service.ts           ← Lógica de mensagens (criar, listar, buscar por id)
-    mensagens.controller.spec.ts   ← Teste unitário do controller de mensagens
-    mensagens.service.spec.ts      ← Teste unitário do service de mensagens
+    mensagens.module.ts       — módulo de mensagens
+    mensagens.controller.ts   — recebe GET e POST de mensagens
+    mensagens.service.ts      — lógica (criar, listar, buscar por id)
+    mensagens.controller.spec.ts
+    mensagens.service.spec.ts
     entities/
-      mensagem.entity.ts           ← Tabela "mensagem" na BD (id, texto, prioridade, dataCriacao)
+      mensagem.entity.ts      — tabela "mensagem" na BD
     dto/
-      create-mensagem.dto.ts       ← Formato dos dados para criar mensagem (texto + prioridade)
-  auth/
-    auth.module.ts                 ← Módulo de autenticação (configura JWT com expiração 24h)
-    auth.controller.ts             ← Recebe pedidos de login e registo
-    auth.service.ts                ← Lógica de registo (bcrypt) e login (gera token JWT)
-    entities/
-      utilizador.entity.ts         ← Tabela "utilizador" na BD (id, nome, email, password, tipo)
-    dto/
-      registar.dto.ts              ← Formato dos dados para registo (nome, email, password, tipo)
-      login.dto.ts                 ← Formato dos dados para login (email, password)
+      create-mensagem.dto.ts  — formato dos dados para criar mensagem
 test/
-  app.e2e-spec.ts                  ← Teste end-to-end do endpoint raiz
+  app.e2e-spec.ts        — teste end-to-end do endpoint raiz
 ```
 
-## Tabelas na base de dados
+## Tabela mensagem
 
-### mensagem
+- id — number, gerado automaticamente
+- texto — string, conteúdo da mensagem
+- prioridade — string, 'normal' (padrão) ou 'alta'
+- dataCriacao — timestamp, preenchido automaticamente
 
-| Coluna      | Tipo      | Descrição                           |
-|-------------|-----------|-------------------------------------|
-| id          | number    | Gerado automaticamente (1, 2, 3…)  |
-| texto       | string    | Conteúdo da mensagem                |
-| prioridade  | string    | 'normal' ou 'alta' (padrão: normal) |
-| dataCriacao | timestamp | Preenchido automaticamente          |
+## O que está feito
 
-### utilizador
-
-| Coluna   | Tipo   | Descrição                              |
-|----------|--------|----------------------------------------|
-| id       | number | Gerado automaticamente                 |
-| nome     | string | Nome do utilizador                     |
-| email    | string | Email (único, usado para login)        |
-| password | string | Password encriptada com bcrypt         |
-| tipo     | string | 'coordenador' ou 'operador' (padrão: operador) |
-
-## O que já está feito
-
-### Base de dados e infraestrutura
-- PostgreSQL a correr em Docker (`docker-compose.yml`) na porta 5432
-- Base de dados `notificacoes_db` criada automaticamente
-- Ligação NestJS ↔ PostgreSQL via TypeORM com `synchronize: true` (cria tabelas automaticamente)
-
-### Autenticação (`src/auth/`)
-- **Registo** (`POST /api/auth/registar`) — cria utilizador com password encriptada (bcrypt, 10 rondas)
-- **Login** (`POST /api/auth/login`) — verifica credenciais e devolve token JWT (expira em 24h)
-- Dois tipos de utilizador: `coordenador` e `operador`
-- Verificação de email duplicado no registo (devolve erro 409)
-- Mensagem de erro genérica no login para não revelar se o email existe (segurança)
-- Password nunca devolvida nas respostas da API
-
-### Mensagens (`src/mensagens/`)
-- **Listar todas** (`GET /api/mensagens`) — ordenadas da mais recente para a mais antiga
-- **Ver por id** (`GET /api/mensagens/:id`) — devolve uma mensagem específica
-- **Criar** (`POST /api/mensagens`) — guarda nova mensagem com texto e prioridade
-- Prioridade com dois valores: `normal` (padrão) e `alta`
-- Data de criação preenchida automaticamente pelo TypeORM
-
-### Testes
-- 3 testes unitários a passar (AppController, MensagensController, MensagensService)
-- 1 teste end-to-end configurado (endpoint raiz)
-
-### Configuração geral
-- Servidor NestJS a correr na porta 3000
+- PostgreSQL a correr em Docker (porta 5432, BD notificacoes_db)
+- NestJS ligado ao PostgreSQL via TypeORM (synchronize: true, cria tabelas sozinho)
+- CRUD de mensagens: criar, listar todas, buscar por id
+- Prioridade normal/alta, data de criação automática
+- 3 testes unitários a passar
 - ESLint + Prettier configurados
-- TypeScript compilando sem erros
 
 ## O que falta fazer
 
-### Prioridade Alta (essencial para o sistema funcionar)
-- [ ] **WebSocket Gateway com Socket.io** — Quando o coordenador cria uma mensagem, emitir para todos os operadores conectados em tempo real
-- [ ] **Guard de autenticação JWT** — Proteger os endpoints de mensagens (atualmente qualquer pessoa pode aceder sem estar autenticada)
-- [ ] **Guard de autorização por tipo** — Só coordenadores podem criar mensagens; operadores só podem ler
-- [ ] **CORS** — Ativar na `main.ts` para o Portal Vue.js e a Extensão Chrome conseguirem comunicar com o backend
-- [ ] **Validação dos DTOs** — Instalar `class-validator` e `class-transformer` para validar campos obrigatórios e formatos
+Prioridade alta:
+- Autenticação com JWT (registo, login, proteger endpoints)
+- Autorização por tipo (coordenador cria, operador só lê)
+- WebSocket com Socket.io (mensagens em tempo real)
+- CORS para o frontend e extensão comunicarem com o backend
+- Validação dos DTOs com class-validator
 
-### Prioridade Média (funcionalidades obrigatórias do projeto)
-- [ ] **Relação mensagem ↔ utilizador** — Guardar quem enviou cada mensagem (coluna remetente na tabela mensagem)
-- [ ] **Histórico com pesquisa** — Endpoint para pesquisar mensagens por texto e filtrar por intervalo de datas
-- [ ] **Envio para grupos/zonas** — Conceito de zona geográfica para enviar mensagens só para operadores de certas zonas
-- [ ] **Templates de mensagens rápidas** — Entidade/endpoint para templates pré-definidos (Acidente, Trânsito intenso, Avaria, Desvio)
-- [ ] **Push notifications** — Integração com Web Push API para notificações no browser dos operadores
+Prioridade média:
+- Relação mensagem ↔ utilizador (quem enviou cada mensagem)
+- Pesquisa de mensagens por texto e filtro por datas
+- Envio para grupos/zonas geográficas
+- Templates de mensagens rápidas
+- Push notifications no browser
 
-### Prioridade Baixa (extensões futuras)
-- [ ] Confirmação de leitura das mensagens
-- [ ] Dashboard de atividade do coordenador
-- [ ] Envio para grupos dinâmicos
-- [ ] Variáveis de ambiente (`.env`) para chave JWT e credenciais da BD
-- [ ] Testes unitários mais completos (testar a lógica de cada função, não só se existe)
+Prioridade baixa:
+- Confirmação de leitura
+- Dashboard do coordenador
+- Variáveis de ambiente (.env)
+- Mais testes unitários
 
-## License
+## Como testar
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Os GET abrem direto no browser. Para POST usar curl, Postman ou Thunder Client (extensão do VS Code).
+
+Criar mensagem:
+curl -X POST http://localhost:3000/api/mensagens -H "Content-Type: application/json" -d '{"texto": "Acidente na Av. de Roma", "prioridade": "alta"}'
+
+Ver todas as mensagens:
+curl http://localhost:3000/api/mensagens
+
+Ver mensagem por id:
+curl http://localhost:3000/api/mensagens/1
+
+Correr testes:
+npm test

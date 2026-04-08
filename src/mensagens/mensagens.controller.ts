@@ -1,3 +1,9 @@
+// ============================================
+// CÓDIGO ORIGINAL — gerado por IA
+// Comentado para o guião de aprendizagem
+// Vais reescrever este ficheiro passo a passo!
+// ============================================
+/*
 // ====================================================
 // mensagens.controller.ts — Controller de mensagens
 // Recebe os pedidos HTTP relacionados com mensagens
@@ -34,3 +40,5 @@ export class MensagensController {
     return this.mensagensService.create(dados);
   }
 }
+
+*/

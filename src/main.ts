@@ -1,3 +1,9 @@
+// ============================================
+// CÓDIGO ORIGINAL — gerado por IA
+// Comentado para o guião de aprendizagem
+// Vais reescrever este ficheiro passo a passo!
+// ============================================
+/*
 // ====================================================
 // main.ts — Ponto de entrada do servidor
 // Este ficheiro arranca a aplicação NestJS na porta 3000
@@ -23,3 +29,5 @@ async function bootstrap() {
 // Chama a função para arrancar tudo
 // void indica que sabemos que é uma Promise e não precisamos de await aqui
 void bootstrap();
+
+*/

@@ -1,3 +1,9 @@
+// ============================================
+// CÓDIGO ORIGINAL — gerado por IA
+// Comentado para o guião de aprendizagem
+// Vais reescrever este ficheiro passo a passo!
+// ============================================
+/*
 // ====================================================
 // app.service.ts — Serviço principal
 // Um "serviço" é onde colocamos a lógica do programa.
@@ -15,3 +21,5 @@ export class AppService {
     return 'Backend do Sistema de Notificações está a funcionar!';
   }
 }
+
+*/

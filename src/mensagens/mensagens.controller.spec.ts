@@ -1,3 +1,9 @@
+// ============================================
+// CÓDIGO ORIGINAL — gerado por IA
+// Comentado para o guião de aprendizagem
+// Vais reescrever este ficheiro passo a passo!
+// ============================================
+/*
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { MensagensController } from './mensagens.controller';
@@ -32,3 +38,5 @@ describe('MensagensController', () => {
     expect(controller).toBeDefined();
   });
 });
+
+*/

@@ -1,3 +1,9 @@
+// ============================================
+// CÓDIGO ORIGINAL — gerado por IA
+// Comentado para o guião de aprendizagem
+// Vais reescrever este ficheiro passo a passo!
+// ============================================
+/*
 // ====================================================
 // app.controller.ts — Controller principal
 // Um "controller" é o ficheiro que recebe os pedidos HTTP (GET, POST, etc.)
@@ -22,3 +28,5 @@ export class AppController {
     return this.appService.getHello();
   }
 }
+
+*/

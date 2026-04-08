@@ -1,3 +1,9 @@
+// ============================================
+// CÓDIGO ORIGINAL — gerado por IA
+// Comentado para o guião de aprendizagem
+// Vais reescrever este ficheiro passo a passo!
+// ============================================
+/*
 // ====================================================
 // mensagens.service.ts — Serviço de mensagens
 // Contém a lógica para criar e buscar mensagens na base de dados.
@@ -40,3 +46,5 @@ export class MensagensService {
     return this.mensagemRepo.save(novaMensagem);
   }
 }
+
+*/
