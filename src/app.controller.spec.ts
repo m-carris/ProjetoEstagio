@@ -1,9 +1,7 @@
-// ============================================
-// CÓDIGO ORIGINAL — gerado por IA
-// Comentado para o guião de aprendizagem
-// Vais reescrever este ficheiro passo a passo!
-// ============================================
-/*
+// ====================================================
+// app.controller.spec.ts — Testes do controller principal
+// ====================================================
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -21,12 +19,10 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return welcome message', () => {
+    it('deve devolver a mensagem de boas-vindas', () => {
       expect(appController.getHello()).toBe(
         'Backend do Sistema de Notificações está a funcionar!',
       );
     });
   });
 });
-
-*/
