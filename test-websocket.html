@@ -19,7 +19,7 @@
 
   <script>
     // Ligar ao servidor WebSocket
-    var socket = io('http://localhost:3000');
+    const socket = io('http://localhost:3000');
 
     socket.on('connect', function () {
       document.getElementById('estado').textContent = '✅ Ligado ao servidor!';
@@ -31,12 +31,12 @@
 
     // Ouvir mensagens novas
     socket.on('nova-mensagem', function (mensagem) {
-      var div = document.getElementById('mensagens');
-      var classe = 'normal';
+      const div = document.getElementById('mensagens');
+      let classe = 'normal';
       if (mensagem.prioridade === 'alta') {
         classe = 'alta';
       }
-      var novoHtml = '<p class="' + classe + '">'
+      const novoHtml = '<p class="' + classe + '">'
         + '<strong>[' + mensagem.prioridade.toUpperCase() + ']</strong> '
         + mensagem.texto
         + ' <small>(' + new Date(mensagem.dataCriacao).toLocaleString('pt-PT') + ')</small>'

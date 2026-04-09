@@ -5,13 +5,13 @@
 // periodicamente e mostra notificações.
 
 // URL do backend
-var API_URL = 'http://localhost:3000/api';
+const API_URL = 'http://localhost:3000/api';
 
 // Guardar o ID da última mensagem vista
-var ultimoIdVisto = 0;
+let ultimoIdVisto = 0;
 
 // Verificar novas mensagens
-var verificarNovasMensagens = function () {
+const verificarNovasMensagens = function () {
   fetch(API_URL + '/mensagens')
     .then(function (resposta) {
       return resposta.json();
@@ -19,11 +19,11 @@ var verificarNovasMensagens = function () {
     .then(function (mensagens) {
       if (mensagens.length > 0) {
         // Verificar se há mensagens novas
-        for (var i = 0; i < mensagens.length; i++) {
-          var msg = mensagens[i];
+        for (let i = 0; i < mensagens.length; i++) {
+          const msg = mensagens[i];
           if (msg.id > ultimoIdVisto) {
             // Mostrar notificação do browser
-            var titulo = '🟢 Nova Mensagem';
+            let titulo = '🟢 Nova Mensagem';
             if (msg.prioridade === 'alta') {
               titulo = '🔴 URGENTE';
             }
@@ -43,7 +43,7 @@ var verificarNovasMensagens = function () {
         ultimoIdVisto = mensagens[0].id;
 
         // Guardar mensagens no storage da extensão (máximo 20)
-        var mensagensParaGuardar = mensagens.slice(0, 20);
+        const mensagensParaGuardar = mensagens.slice(0, 20);
         chrome.storage.local.set({ mensagens: mensagensParaGuardar });
       }
     })

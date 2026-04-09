@@ -102,20 +102,20 @@ interface Mensagem {
 // ==========================================
 // VARIÁVEIS REATIVAS
 // ==========================================
-var textoMensagem = ref('');
-var prioridade = ref<'normal' | 'alta'>('normal');
-var mensagens = ref<Mensagem[]>([]);
-var termoPesquisa = ref('');
-var router = useRouter();
+const textoMensagem = ref('');
+const prioridade = ref<'normal' | 'alta'>('normal');
+const mensagens = ref<Mensagem[]>([]);
+const termoPesquisa = ref('');
+const router = useRouter();
 
 // ==========================================
 // COMPUTED — valores calculados automaticamente
 // ==========================================
-var mensagensFiltradas = computed(function () {
+const mensagensFiltradas = computed(function () {
   if (!termoPesquisa.value.trim()) {
     return mensagens.value;
   }
-  var termo = termoPesquisa.value.toLowerCase();
+  const termo = termoPesquisa.value.toLowerCase();
   return mensagens.value.filter(function (m) {
     return m.texto.toLowerCase().includes(termo);
   });
@@ -126,21 +126,27 @@ var mensagensFiltradas = computed(function () {
 // ==========================================
 
 // Buscar todas as mensagens ao carregar a página
-var carregarMensagens = async function () {
+const carregarMensagens = async function () {
   try {
-    var resposta = await api.get('/mensagens');
+    const resposta = await api.get('/mensagens');
     mensagens.value = resposta.data;
   } catch (e) {
     console.error('Erro ao carregar mensagens:', e);
   }
 };
 
+// Fazer logout
+const sair = function () {
+  localStorage.removeItem('token');
+  router.push('/');
+};
+
 // Enviar uma nova mensagem
-var enviarMensagem = async function () {
+const enviarMensagem = async function () {
   if (!textoMensagem.value.trim()) return;
 
   try {
-    var resposta = await api.post('/mensagens', {
+    const resposta = await api.post('/mensagens', {
       texto: textoMensagem.value,
       prioridade: prioridade.value,
     });
@@ -151,8 +157,9 @@ var enviarMensagem = async function () {
     // Limpar o formulário
     textoMensagem.value = '';
     prioridade.value = 'normal';
-  } catch (e: any) {
-    if (e.response && e.response.status === 401) {
+  } catch (e: unknown) {
+    const err = e as { response?: { status?: number } };
+    if (err.response && err.response.status === 401) {
       alert('Sessão expirada. Faz login novamente.');
       sair();
     } else {
@@ -162,14 +169,8 @@ var enviarMensagem = async function () {
 };
 
 // Usar um template rápido
-var usarTemplate = function (texto: string) {
+const usarTemplate = function (texto: string) {
   textoMensagem.value = texto + ': ';
-};
-
-// Fazer logout
-var sair = function () {
-  localStorage.removeItem('token');
-  router.push('/');
 };
 
 // Carregar mensagens quando o componente é montado
@@ -181,10 +182,10 @@ onMounted(function () {
   carregarMensagens();
 
   // Ligar ao WebSocket para receber mensagens em tempo real
-  var socket = io('http://localhost:3000');
+  const socket = io('http://localhost:3000');
 
   socket.on('nova-mensagem', function (mensagem: Mensagem) {
-    var existe = mensagens.value.some(function (m) {
+    const existe = mensagens.value.some(function (m) {
       return m.id === mensagem.id;
     });
     if (!existe) {

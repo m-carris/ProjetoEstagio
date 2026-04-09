@@ -5,11 +5,11 @@
 
 // Quando o popup abre, carregar as mensagens guardadas
 document.addEventListener('DOMContentLoaded', function () {
-  var divMensagens = document.getElementById('mensagens');
+  const divMensagens = document.getElementById('mensagens');
 
   // Buscar mensagens do storage da extensão
   chrome.storage.local.get(['mensagens'], function (result) {
-    var mensagens = result.mensagens;
+    const mensagens = result.mensagens;
 
     if (!mensagens || mensagens.length === 0) {
       divMensagens.innerHTML = '<div class="vazio">Nenhuma mensagem recebida ainda.</div>';
@@ -17,25 +17,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Gerar o HTML das mensagens
-    var html = '';
-    for (var i = 0; i < mensagens.length; i++) {
-      var msg = mensagens[i];
-      var isAlta = msg.prioridade === 'alta';
-      var data = new Date(msg.dataCriacao).toLocaleString('pt-PT');
+    let html = '';
+    for (let i = 0; i < mensagens.length; i++) {
+      const msg = mensagens[i];
+      const isAlta = msg.prioridade === 'alta';
+      const data = new Date(msg.dataCriacao).toLocaleString('pt-PT');
 
-      var classeMsg = 'mensagem';
+      let classeMsg = 'mensagem';
       if (isAlta) {
         classeMsg = classeMsg + ' alta';
       }
 
-      var classeBadge = 'badge';
+      let classeBadge = 'badge';
       if (isAlta) {
         classeBadge = classeBadge + ' alta';
       } else {
         classeBadge = classeBadge + ' normal';
       }
 
-      var textoBadge = '🟢 Normal';
+      let textoBadge = '🟢 Normal';
       if (isAlta) {
         textoBadge = '🔴 ALTA';
       }

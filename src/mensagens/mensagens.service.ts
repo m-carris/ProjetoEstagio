@@ -39,7 +39,7 @@ export class MensagensService {
   }
 
   async pesquisar(texto?: string, prioridade?: 'normal' | 'alta'): Promise<Mensagem[]> {
-    const where: any = {};
+    const where: Record<string, unknown> = {};
 
     if (texto) {
       where.texto = Like(`%${texto}%`);

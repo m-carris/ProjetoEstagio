@@ -52,21 +52,22 @@ const aCarregar = ref(false);
 
 const router = useRouter();
 
-var fazerLogin = async function () {
+const fazerLogin = async function () {
   erro.value = '';
   aCarregar.value = true;
 
   try {
-    var resposta = await api.post('/auth/login', {
+    const resposta = await api.post('/auth/login', {
       email: email.value,
       password: password.value,
     });
 
     localStorage.setItem('token', resposta.data.access_token);
     router.push('/painel');
-  } catch (e: any) {
-    if (e.response && e.response.data && e.response.data.message) {
-      erro.value = e.response.data.message;
+  } catch (e: unknown) {
+    const err = e as { response?: { data?: { message?: string } } };
+    if (err.response && err.response.data && err.response.data.message) {
+      erro.value = err.response.data.message;
     } else {
       erro.value = 'Erro ao fazer login. Verifica a ligação ao servidor.';
     }

@@ -10,7 +10,7 @@ const api = axios.create({
 
 // Interceptor — adiciona automaticamente o token a todos os pedidos
 api.interceptors.request.use(function (config) {
-  var token = localStorage.getItem('token');
+  const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = 'Bearer ' + token;
   }
