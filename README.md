@@ -4,24 +4,59 @@
 
 Sistema de notificações em tempo real para uma empresa de transportes. Um coordenador de tráfego envia mensagens/avisos (ex: "Acidente na Av. de Roma, desviar linha 735") e todos os operadores de tráfego recebem essas mensagens no browser.
 
-O projeto completo tem 3 repositórios:
-- **Backend** (este) — NestJS + TypeORM + PostgreSQL + Docker — API REST que recebe, guarda e distribui mensagens
-- **PortalCoordenador** — Vue.js — onde o coordenador envia mensagens e vê o histórico
-- **ExtensaoChrome** — extensão de browser para os operadores receberem notificações
+O projeto completo tem 3 repositórios separados:
 
-## Como correr
+| Repositório | Tecnologia | Função |
+|---|---|---|
+| **Backend** (este) | NestJS, TypeScript, TypeORM, PostgreSQL, Docker | API REST + WebSocket Server — recebe, guarda e distribui mensagens |
+| **PortalCoordenador** | Vue.js | Backoffice web onde o coordenador envia mensagens e vê o histórico |
+| **ExtensaoChrome** | JavaScript/TypeScript | Extensão de browser para operadores receberem notificações em tempo real |
 
-1. Ter Node.js 20+ e Docker instalados
-2. `docker compose up -d` — arranca o PostgreSQL na porta 5432
-3. `npm install` — instala dependências
-4. `npm run start:dev` — servidor em http://localhost:3000
+## Como correr o projeto
 
-## Endpoints
+### 1. Ter tudo instalado
 
-GET / — mensagem de boas-vindas
-GET /api/mensagens — lista todas as mensagens
-GET /api/mensagens/:id — uma mensagem pelo id
-POST /api/mensagens — cria mensagem (body: `{"texto": "...", "prioridade": "normal" ou "alta"}`)
+- **Node.js 20** (ou superior)
+- **Docker** (para a base de dados PostgreSQL)
+
+### 2. Arrancar a base de dados
+
+```bash
+docker compose up -d
+```
+
+Isto cria um container Docker com PostgreSQL na porta 5432, com a base de dados `notificacoes_db`.
+
+### 3. Instalar as dependências
+
+```bash
+npm install
+```
+
+### 4. Arrancar o servidor
+
+```bash
+npm run start:dev
+```
+
+O servidor fica disponível em **http://localhost:3000**
+
+## Endpoints disponíveis
+
+### Mensagens
+
+| Método | URL                | O que faz                    | Corpo do pedido (JSON)                                  |
+|--------|--------------------|------------------------------|---------------------------------------------------------|
+| GET    | /api/mensagens     | Devolve todas as mensagens   | —                                                       |
+| GET    | /api/mensagens/:id | Devolve uma mensagem pelo id | —                                                       |
+| POST   | /api/mensagens     | Cria uma nova mensagem       | `{ "texto": "...", "prioridade": "normal" ou "alta" }` |
+
+### Autenticação
+
+| Método | URL                | O que faz                        | Corpo do pedido (JSON)                                                                     |
+|--------|--------------------|----------------------------------|--------------------------------------------------------------------------------------------|
+| POST   | /api/auth/registar | Regista um novo utilizador       | `{ "nome": "...", "email": "...", "password": "...", "tipo": "coordenador" ou "operador" }` |
+| POST   | /api/auth/login    | Faz login e devolve um token JWT | `{ "email": "...", "password": "..." }`                                                    |
 
 ## Estrutura
 
