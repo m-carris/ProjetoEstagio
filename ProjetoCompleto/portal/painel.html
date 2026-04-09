@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel - Sistema de Notificações</title>
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <!-- ==========================================
+       CABEÇALHO
+       ========================================== -->
+  <div class="cabecalho">
+    <h1>🔔 Painel do Coordenador</h1>
+    <div class="info-utilizador">
+      <span id="nome-utilizador"></span>
+      <button onclick="terminarSessao()" class="botao-logout">Sair</button>
+    </div>
+  </div>
+
+  <div class="conteudo">
+    <!-- ==========================================
+         SECÇÃO: ENVIAR MENSAGEM
+         ========================================== -->
+    <div class="seccao">
+      <h2>📢 Enviar Mensagem</h2>
+
+      <!-- Templates (mensagens rápidas) -->
+      <div class="templates">
+        <p><strong>Mensagens rápidas:</strong></p>
+        <div id="lista-templates"></div>
+      </div>
+
+      <!-- Campo de texto -->
+      <div class="campo">
+        <label>Mensagem:</label>
+        <textarea id="texto-mensagem" rows="4" placeholder="Escreve a tua mensagem aqui..."></textarea>
+      </div>
+
+      <!-- Prioridade -->
+      <div class="campo">
+        <label>Prioridade:</label>
+        <select id="prioridade">
+          <option value="normal">🟢 Normal</option>
+          <option value="alta">🔴 Alta (Urgente)</option>
+        </select>
+      </div>
+
+      <!-- Botão enviar -->
+      <button onclick="enviarMensagem()" class="botao-enviar" id="botao-enviar">Enviar Mensagem</button>
+
+      <!-- Feedback -->
+      <div id="mensagem-feedback" style="display: none; margin-top: 10px;"></div>
+    </div>
+
+    <!-- ==========================================
+         SECÇÃO: HISTÓRICO DE MENSAGENS
+         ========================================== -->
+    <div class="seccao">
+      <h2>📜 Histórico de Mensagens</h2>
+
+      <!-- Pesquisa e filtro -->
+      <div class="pesquisa">
+        <input type="text" id="campo-pesquisa" placeholder="Pesquisar mensagens..." oninput="filtrarMensagens()">
+        <select id="filtro-prioridade" onchange="filtrarMensagens()">
+          <option value="">Todas as prioridades</option>
+          <option value="normal">🟢 Normal</option>
+          <option value="alta">🔴 Alta</option>
+        </select>
+      </div>
+
+      <!-- Lista de mensagens -->
+      <div id="lista-mensagens">
+        <p class="vazio">A carregar mensagens...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // CONFIGURAÇÃO
+    // ==========================================
+    var API_URL = 'http://localhost:3000';
+    var todasMensagens = [];
+
+    // Verificar se o utilizador está autenticado
+    var token = localStorage.getItem('token');
+    var nome = localStorage.getItem('nome');
+
+    if (!token) {
+      window.location.href = '/index.html';
+    }
+
+    // Mostrar o nome do utilizador
+    document.getElementById('nome-utilizador').textContent = 'Olá, ' + nome + '!';
+
+    // ==========================================
+    // FUNÇÃO PARA FAZER PEDIDOS AO SERVIDOR
+    // ==========================================
+    function fazerPedido(metodo, caminho, dados, callback) {
+      var pedido = new XMLHttpRequest();
+      pedido.open(metodo, API_URL + caminho);
+      pedido.setRequestHeader('Content-Type', 'application/json');
+      pedido.setRequestHeader('Authorization', 'Bearer ' + token);
+
+      pedido.onload = function() {
+        var resposta = JSON.parse(pedido.responseText);
+        callback(resposta, pedido.status);
+      };
+
+      pedido.onerror = function() {
+        callback({ erro: 'Erro de ligação ao servidor' }, 0);
+      };
+
+      if (dados) {
+        pedido.send(JSON.stringify(dados));
+      } else {
+        pedido.send();
+      }
+    }
+
+    // ==========================================
+    // TERMINAR SESSÃO (LOGOUT)
+    // ==========================================
+    function terminarSessao() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('nome');
+      localStorage.removeItem('tipo');
+      window.location.href = '/index.html';
+    }
+
+    // ==========================================
+    // CARREGAR E MOSTRAR TEMPLATES
+    // ==========================================
+    function carregarTemplates() {
+      fazerPedido('GET', '/api/templates', null, function(templates, status) {
+        var container = document.getElementById('lista-templates');
+        var html = '';
+
+        for (var i = 0; i < templates.length; i++) {
+          var t = templates[i];
+          // Criar botão para cada template
+          html = html + '<button class="botao-template" onclick="usarTemplate(' + i + ')">';
+          html = html + t.icone + ' ' + t.titulo;
+          html = html + '</button> ';
+        }
+
+        container.innerHTML = html;
+
+        // Guardar os templates para usar quando clicar nos botões
+        window.listaTemplates = templates;
+      });
+    }
+
+    // Quando clicar num template, preencher o campo de texto
+    function usarTemplate(indice) {
+      var template = window.listaTemplates[indice];
+      document.getElementById('texto-mensagem').value = template.texto;
+    }
+
+    // ==========================================
+    // ENVIAR MENSAGEM
+    // ==========================================
+    function enviarMensagem() {
+      var texto = document.getElementById('texto-mensagem').value;
+      var prioridade = document.getElementById('prioridade').value;
+
+      // Verificar se tem texto
+      if (texto === '') {
+        mostrarFeedback('Escreve uma mensagem primeiro!', 'erro');
+        return;
+      }
+
+      var dados = {
+        texto: texto,
+        prioridade: prioridade
+      };
+
+      fazerPedido('POST', '/api/mensagens', dados, function(resposta, status) {
+        if (status === 201) {
+          mostrarFeedback('Mensagem enviada com sucesso! ✅', 'sucesso');
+          // Limpar o formulário
+          document.getElementById('texto-mensagem').value = '';
+          document.getElementById('prioridade').value = 'normal';
+          // Recarregar mensagens
+          carregarMensagens();
+        } else {
+          mostrarFeedback(resposta.erro || 'Erro ao enviar', 'erro');
+        }
+      });
+    }
+
+    // Mostrar mensagem de feedback temporária
+    function mostrarFeedback(texto, tipo) {
+      var elem = document.getElementById('mensagem-feedback');
+      elem.textContent = texto;
+      elem.className = tipo;
+      elem.style.display = 'block';
+
+      // Esconder após 3 segundos
+      setTimeout(function() {
+        elem.style.display = 'none';
+      }, 3000);
+    }
+
+    // ==========================================
+    // CARREGAR MENSAGENS DO SERVIDOR
+    // ==========================================
+    function carregarMensagens() {
+      fazerPedido('GET', '/api/mensagens', null, function(mensagens, status) {
+        todasMensagens = mensagens;
+        filtrarMensagens();
+      });
+    }
+
+    // ==========================================
+    // FILTRAR MENSAGENS (PESQUISA E PRIORIDADE)
+    // ==========================================
+    function filtrarMensagens() {
+      var textoPesquisa = document.getElementById('campo-pesquisa').value.toLowerCase();
+      var prioridadeFiltro = document.getElementById('filtro-prioridade').value;
+
+      var mensagensFiltradas = [];
+
+      for (var i = 0; i < todasMensagens.length; i++) {
+        var m = todasMensagens[i];
+        var textoOk = true;
+        var prioridadeOk = true;
+
+        // Verificar se o texto da mensagem contém o texto de pesquisa
+        if (textoPesquisa !== '') {
+          textoOk = m.texto.toLowerCase().indexOf(textoPesquisa) !== -1;
+        }
+
+        // Verificar se a prioridade corresponde ao filtro
+        if (prioridadeFiltro !== '') {
+          prioridadeOk = m.prioridade === prioridadeFiltro;
+        }
+
+        if (textoOk && prioridadeOk) {
+          mensagensFiltradas.push(m);
+        }
+      }
+
+      mostrarMensagens(mensagensFiltradas);
+    }
+
+    // ==========================================
+    // MOSTRAR MENSAGENS NO ECRÃ
+    // ==========================================
+    function mostrarMensagens(mensagens) {
+      var container = document.getElementById('lista-mensagens');
+
+      if (mensagens.length === 0) {
+        container.innerHTML = '<p class="vazio">Nenhuma mensagem encontrada.</p>';
+        return;
+      }
+
+      var html = '';
+
+      for (var i = 0; i < mensagens.length; i++) {
+        var m = mensagens[i];
+
+        // Definir a classe e etiqueta com base na prioridade
+        var classePrioridade = 'mensagem-normal';
+        var etiquetaTexto = '🟢 Normal';
+        var etiquetaClasse = 'etiqueta-normal';
+
+        if (m.prioridade === 'alta') {
+          classePrioridade = 'mensagem-alta';
+          etiquetaTexto = '🔴 ALTA';
+          etiquetaClasse = 'etiqueta-alta';
+        }
+
+        // Formatar a data
+        var data = new Date(m.dataCriacao);
+        var dataFormatada = data.toLocaleDateString('pt-PT') + ' ' + data.toLocaleTimeString('pt-PT');
+
+        // Construir o HTML do cartão
+        html = html + '<div class="cartao-mensagem ' + classePrioridade + '">';
+        html = html + '  <div class="mensagem-cabecalho">';
+        html = html + '    <span class="etiqueta ' + etiquetaClasse + '">' + etiquetaTexto + '</span>';
+        html = html + '    <span class="data">' + dataFormatada + '</span>';
+        html = html + '  </div>';
+        html = html + '  <p class="mensagem-texto">' + m.texto + '</p>';
+
+        if (m.autor) {
+          html = html + '  <p class="mensagem-autor">Enviada por: ' + m.autor + '</p>';
+        }
+
+        html = html + '</div>';
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ==========================================
+    // INICIAR O PAINEL
+    // ==========================================
+    // Carregar templates e mensagens quando a página abre
+    carregarTemplates();
+    carregarMensagens();
+
+    // Verificar novas mensagens a cada 5 segundos (polling)
+    setInterval(function() {
+      carregarMensagens();
+    }, 5000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Sistema de Notificações</title>
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🔔 Sistema de Notificações</h1>
+    <h2>Login do Coordenador</h2>
+
+    <!-- Mensagens de erro e sucesso -->
+    <div id="mensagem-erro" class="erro" style="display: none;"></div>
+    <div id="mensagem-sucesso" class="sucesso" style="display: none;"></div>
+
+    <!-- Formulário de Login -->
+    <div id="formulario-login">
+      <div class="campo">
+        <label>Email:</label>
+        <input type="email" id="email" placeholder="coord@teste.com">
+      </div>
+      <div class="campo">
+        <label>Password:</label>
+        <input type="password" id="password" placeholder="123456" onkeypress="verificarEnter(event)">
+      </div>
+      <button onclick="fazerLogin()" class="botao-principal">Entrar</button>
+      <p class="texto-pequeno">Não tens conta? <a href="#" onclick="mostrarRegisto()">Registar aqui</a></p>
+    </div>
+
+    <!-- Formulário de Registo -->
+    <div id="formulario-registo" style="display: none;">
+      <div class="campo">
+        <label>Nome:</label>
+        <input type="text" id="reg-nome" placeholder="O teu nome">
+      </div>
+      <div class="campo">
+        <label>Email:</label>
+        <input type="email" id="reg-email" placeholder="email@exemplo.com">
+      </div>
+      <div class="campo">
+        <label>Password:</label>
+        <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres">
+      </div>
+      <button onclick="fazerRegisto()" class="botao-principal">Registar</button>
+      <p class="texto-pequeno"><a href="#" onclick="mostrarLogin()">Voltar ao login</a></p>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // CONFIGURAÇÃO
+    // ==========================================
+    var API_URL = 'http://localhost:3000';
+
+    // Se já tem token guardado, ir direto para o painel
+    var tokenGuardado = localStorage.getItem('token');
+    if (tokenGuardado) {
+      window.location.href = '/painel.html';
+    }
+
+    // ==========================================
+    // FUNÇÃO PARA FAZER PEDIDOS AO SERVIDOR
+    // ==========================================
+    // Esta função envia dados ao servidor e recebe a resposta
+    // Usa XMLHttpRequest que funciona com callbacks (funções)
+    function fazerPedido(metodo, caminho, dados, callback) {
+      var pedido = new XMLHttpRequest();
+      pedido.open(metodo, API_URL + caminho);
+      pedido.setRequestHeader('Content-Type', 'application/json');
+
+      pedido.onload = function() {
+        var resposta = JSON.parse(pedido.responseText);
+        callback(resposta, pedido.status);
+      };
+
+      pedido.onerror = function() {
+        callback({ erro: 'Erro de ligação ao servidor. Verifica se o servidor está a correr.' }, 0);
+      };
+
+      if (dados) {
+        pedido.send(JSON.stringify(dados));
+      } else {
+        pedido.send();
+      }
+    }
+
+    // ==========================================
+    // MOSTRAR / ESCONDER FORMULÁRIOS
+    // ==========================================
+    function mostrarRegisto() {
+      document.getElementById('formulario-login').style.display = 'none';
+      document.getElementById('formulario-registo').style.display = 'block';
+      esconderMensagens();
+    }
+
+    function mostrarLogin() {
+      document.getElementById('formulario-login').style.display = 'block';
+      document.getElementById('formulario-registo').style.display = 'none';
+      esconderMensagens();
+    }
+
+    function esconderMensagens() {
+      document.getElementById('mensagem-erro').style.display = 'none';
+      document.getElementById('mensagem-sucesso').style.display = 'none';
+    }
+
+    function mostrarErro(texto) {
+      var elem = document.getElementById('mensagem-erro');
+      elem.textContent = texto;
+      elem.style.display = 'block';
+      document.getElementById('mensagem-sucesso').style.display = 'none';
+    }
+
+    function mostrarSucesso(texto) {
+      var elem = document.getElementById('mensagem-sucesso');
+      elem.textContent = texto;
+      elem.style.display = 'block';
+      document.getElementById('mensagem-erro').style.display = 'none';
+    }
+
+    // ==========================================
+    // FAZER LOGIN
+    // ==========================================
+    function fazerLogin() {
+      var email = document.getElementById('email').value;
+      var password = document.getElementById('password').value;
+
+      if (email === '' || password === '') {
+        mostrarErro('Preenche o email e a password');
+        return;
+      }
+
+      var dados = { email: email, password: password };
+
+      fazerPedido('POST', '/api/login', dados, function(resposta, status) {
+        if (status === 200) {
+          // Guardar token e dados no browser
+          localStorage.setItem('token', resposta.token);
+          localStorage.setItem('nome', resposta.nome);
+          localStorage.setItem('tipo', resposta.tipo);
+          // Ir para o painel
+          window.location.href = '/painel.html';
+        } else {
+          mostrarErro(resposta.erro || 'Erro ao fazer login');
+        }
+      });
+    }
+
+    // ==========================================
+    // FAZER REGISTO
+    // ==========================================
+    function fazerRegisto() {
+      var nome = document.getElementById('reg-nome').value;
+      var email = document.getElementById('reg-email').value;
+      var password = document.getElementById('reg-password').value;
+
+      if (nome === '' || email === '' || password === '') {
+        mostrarErro('Preenche todos os campos');
+        return;
+      }
+
+      if (password.length < 6) {
+        mostrarErro('A password tem de ter pelo menos 6 caracteres');
+        return;
+      }
+
+      var dados = {
+        nome: nome,
+        email: email,
+        password: password,
+        tipo: 'coordenador'
+      };
+
+      fazerPedido('POST', '/api/registar', dados, function(resposta, status) {
+        if (status === 201) {
+          mostrarSucesso('Conta criada com sucesso! Faz login agora.');
+          mostrarLogin();
+        } else {
+          mostrarErro(resposta.erro || 'Erro ao registar');
+        }
+      });
+    }
+
+    // ==========================================
+    // PERMITIR ENTER PARA FAZER LOGIN
+    // ==========================================
+    function verificarEnter(evento) {
+      if (evento.key === 'Enter') {
+        fazerLogin();
+      }
+    }
+  </script>
+</body>
+</html>
