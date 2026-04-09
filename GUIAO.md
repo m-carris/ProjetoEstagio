@@ -1045,7 +1045,7 @@ listaMensagens.forEach((msg) => {
 // PASSO 3: Filtrar apenas as mensagens urgentes (prioridade 'alta')
 // .filter() — como escolher bolas de cor específica do saco
 const mensagensUrgentes = listaMensagens.filter((msg) => msg.prioridade === 'alta');
-console.log('\nMensagens urgentes (', mensagensUrgentes.length, 'no total):');
+console.log(`\nMensagens urgentes (${mensagensUrgentes.length} no total):`);
 mensagensUrgentes.forEach((msg) => {
   console.log(' 🔴', msg.texto);
 });
