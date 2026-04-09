@@ -175,7 +175,7 @@ function servirFicheiro(caminhoFicheiro, res) {
     res.end(conteudo);
   } catch (erro) {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.end('Ficheiro nao encontrado');
+    res.end('Ficheiro não encontrado');
   }
 }
 
@@ -390,7 +390,16 @@ var servidor = http.createServer(function(req, res) {
     ficheiro = '/index.html';
   }
 
-  var caminhoFicheiro = path.join(__dirname, 'portal', ficheiro);
+  // Proteção: garantir que o caminho não sai da pasta "portal"
+  // (evita ataques de path traversal como "../../etc/passwd")
+  var pastaPortal = path.join(__dirname, 'portal');
+  var caminhoFicheiro = path.normalize(path.join(pastaPortal, ficheiro));
+  if (caminhoFicheiro.indexOf(pastaPortal) !== 0) {
+    res.writeHead(403);
+    res.end('Acesso negado');
+    return;
+  }
+
   servirFicheiro(caminhoFicheiro, res);
 });
 
