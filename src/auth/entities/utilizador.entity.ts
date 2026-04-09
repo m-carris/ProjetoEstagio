@@ -1,5 +1,5 @@
 // ====================================================
-// mensagem.entity.ts — Entidade (tabela) de mensagens
+// utilizador.entity.ts — Entidade (tabela) de utilizadores
 // ====================================================
 
 import {
@@ -10,15 +10,21 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Mensagem {
+export class Utilizador {
   @PrimaryGeneratedColumn()
   id!: number;
 
   @Column()
-  texto!: string;
+  nome!: string;
 
-  @Column({ default: 'normal' })
-  prioridade!: 'normal' | 'alta';
+  @Column({ unique: true })
+  email!: string;
+
+  @Column()
+  password!: string;
+
+  @Column({ default: 'operador' })
+  tipo!: 'coordenador' | 'operador';
 
   @CreateDateColumn()
   dataCriacao!: Date;
