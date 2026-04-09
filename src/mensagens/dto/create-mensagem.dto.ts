@@ -1,22 +1,16 @@
-// ============================================
-// CÓDIGO ORIGINAL — gerado por IA
-// Comentado para o guião de aprendizagem
-// Vais reescrever este ficheiro passo a passo!
-// ============================================
-/*
 // ====================================================
-// create-mensagem.dto.ts — DTO para criar uma mensagem
-// Um "DTO" (Data Transfer Object) define o formato dos dados
-// que o cliente envia quando faz um pedido.
-// É como um formulário: define que campos são obrigatórios.
+// create-mensagem.dto.ts — DTO com validação
 // ====================================================
+
+import { IsIn, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateMensagemDto {
-  // O texto da mensagem (ex: "Acidente na Av. de Roma")
+  @IsString({ message: 'O texto tem de ser uma string' })
+  @IsNotEmpty({ message: 'O texto não pode estar vazio' })
   texto!: string;
 
-  // A prioridade: 'normal' ou 'alta'
+  @IsIn(['normal', 'alta'], {
+    message: 'A prioridade tem de ser "normal" ou "alta"',
+  })
   prioridade!: 'normal' | 'alta';
 }
-
-*/

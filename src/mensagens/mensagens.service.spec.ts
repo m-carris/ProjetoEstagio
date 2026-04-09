@@ -1,13 +1,12 @@
-// ============================================
-// CÓDIGO ORIGINAL — gerado por IA
-// Comentado para o guião de aprendizagem
-// Vais reescrever este ficheiro passo a passo!
-// ============================================
-/*
+// ====================================================
+// mensagens.service.spec.ts — Testes do serviço de mensagens
+// ====================================================
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { MensagensService } from './mensagens.service';
 import { Mensagem } from './entities/mensagem.entity';
+import { NotificacoesGateway } from '../notificacoes/notificacoes.gateway';
 
 describe('MensagensService', () => {
   let service: MensagensService;
@@ -16,7 +15,6 @@ describe('MensagensService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MensagensService,
-        // Mock do repositório (simula a base de dados nos testes)
         {
           provide: getRepositoryToken(Mensagem),
           useValue: {
@@ -26,15 +24,19 @@ describe('MensagensService', () => {
             save: jest.fn(),
           },
         },
+        {
+          provide: NotificacoesGateway,
+          useValue: {
+            enviarParaTodos: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<MensagensService>(MensagensService);
   });
 
-  it('should be defined', () => {
+  it('deve estar definido', () => {
     expect(service).toBeDefined();
   });
 });
-
-*/

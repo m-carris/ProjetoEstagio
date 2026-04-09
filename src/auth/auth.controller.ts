@@ -1,0 +1,23 @@
+// ====================================================
+// auth.controller.ts — Controller de autenticação
+// ====================================================
+
+import { Body, Controller, Post } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { RegistarDto } from './dto/registar.dto';
+import { LoginDto } from './dto/login.dto';
+
+@Controller('api/auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
+
+  @Post('registar')
+  registar(@Body() dados: RegistarDto) {
+    return this.authService.registar(dados);
+  }
+
+  @Post('login')
+  login(@Body() dados: LoginDto) {
+    return this.authService.login(dados);
+  }
+}

@@ -1,13 +1,5 @@
-// ============================================
-// CÓDIGO ORIGINAL — gerado por IA
-// Comentado para o guião de aprendizagem
-// Vais reescrever este ficheiro passo a passo!
-// ============================================
-/*
 // ====================================================
-// mensagens.module.ts — Módulo de mensagens
-// Este módulo agrupa tudo o que tem a ver com mensagens:
-// o controller, o service e a entidade (tabela) da base de dados.
+// mensagens.module.ts — Módulo de mensagens (com auth e WebSockets)
 // ====================================================
 
 import { Module } from '@nestjs/common';
@@ -15,16 +7,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Mensagem } from './entities/mensagem.entity';
 import { MensagensController } from './mensagens.controller';
 import { MensagensService } from './mensagens.service';
+import { AuthModule } from '../auth/auth.module';
+import { NotificacoesModule } from '../notificacoes/notificacoes.module';
 
 @Module({
   imports: [
-    // TypeOrmModule.forFeature() regista a entidade Mensagem neste módulo
-    // Isto permite ao service aceder à tabela de mensagens na base de dados
     TypeOrmModule.forFeature([Mensagem]),
+    AuthModule,
+    NotificacoesModule,
   ],
   controllers: [MensagensController],
   providers: [MensagensService],
 })
 export class MensagensModule {}
-
-*/

@@ -1,50 +1,57 @@
-// ============================================
-// CÓDIGO ORIGINAL — gerado por IA
-// Comentado para o guião de aprendizagem
-// Vais reescrever este ficheiro passo a passo!
-// ============================================
-/*
 // ====================================================
-// mensagens.service.ts — Serviço de mensagens
-// Contém a lógica para criar e buscar mensagens na base de dados.
+// mensagens.service.ts — Com notificações em tempo real
 // ====================================================
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { Mensagem } from './entities/mensagem.entity';
 import { CreateMensagemDto } from './dto/create-mensagem.dto';
+import { NotificacoesGateway } from '../notificacoes/notificacoes.gateway';
 
 @Injectable()
 export class MensagensService {
-  // O TypeORM injeta aqui o "repositório" da tabela de mensagens
-  // Um repositório é como um ajudante que sabe fazer operações na tabela
-  // (inserir, buscar, apagar, etc.)
   constructor(
     @InjectRepository(Mensagem)
     private readonly mensagemRepo: Repository<Mensagem>,
+
+    private readonly notificacoes: NotificacoesGateway,
   ) {}
 
-  // Devolve todas as mensagens, ordenadas da mais recente para a mais antiga
-  getAll() {
+  getAll(): Promise<Mensagem[]> {
     return this.mensagemRepo.find({
       order: { dataCriacao: 'DESC' },
     });
   }
 
-  // Devolve uma mensagem específica pelo seu id
-  getById(id: number) {
+  getById(id: number): Promise<Mensagem | null> {
     return this.mensagemRepo.findOneBy({ id });
   }
 
-  // Cria uma nova mensagem e guarda na base de dados
-  create(dados: CreateMensagemDto) {
-    // mensagemRepo.create() prepara o objeto (mas ainda não guarda)
+  async create(dados: CreateMensagemDto): Promise<Mensagem> {
     const novaMensagem = this.mensagemRepo.create(dados);
+    const mensagemGuardada = await this.mensagemRepo.save(novaMensagem);
 
-    // mensagemRepo.save() guarda efetivamente na base de dados
-    return this.mensagemRepo.save(novaMensagem);
+    // Enviar a mensagem a todos os clientes ligados via WebSocket
+    this.notificacoes.enviarParaTodos(mensagemGuardada);
+
+    return mensagemGuardada;
+  }
+
+  async pesquisar(texto?: string, prioridade?: 'normal' | 'alta'): Promise<Mensagem[]> {
+    const where: any = {};
+
+    if (texto) {
+      where.texto = Like(`%${texto}%`);
+    }
+
+    if (prioridade) {
+      where.prioridade = prioridade;
+    }
+
+    return this.mensagemRepo.find({
+      where,
+      order: { dataCriacao: 'DESC' },
+    });
   }
 }
-
-*/
