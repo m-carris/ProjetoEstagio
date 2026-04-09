@@ -413,7 +413,7 @@ servidor.listen(PORTA, function() {
   console.log(' Abre o browser em: http://localhost:' + PORTA);
   console.log('=========================================');
   console.log('');
-  console.log(' Conta padrao:');
+  console.log(' Conta padrão:');
   console.log('   Email: coord@teste.com');
   console.log('   Password: 123456');
   console.log('');
