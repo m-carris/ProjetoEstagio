@@ -525,6 +525,8 @@ node logica.js
 
 ### Dia 6: Funções
 
+> 🧠 **Nota:** Este dia está dividido em 6 secções. Lê cada uma com calma, corre o código, e só avança quando perceberes a secção anterior. Não há pressa!
+
 Cria um ficheiro chamado `funcoes.js`:
 
 ```javascript
@@ -550,47 +552,212 @@ const resultado1 = saudacao('Maria');
 console.log(resultado1); // Olá, Maria!
 
 console.log(saudacao('João')); // Olá, João!
+```
 
-// ==========================================
-// 2. ARROW FUNCTIONS (FUNÇÕES SETA)
-// ==========================================
-// Forma mais moderna e curta de escrever funções
-// Usamos muito no NestJS!
+Corre com:
+```bash
+node funcoes.js
+```
 
-const soma = (a, b) => {
+---
+
+> ✅ Se viste `Olá, Maria!` e `Olá, João!`, está tudo certo! Continua para a próxima secção.
+
+---
+
+Agora **adiciona** o código abaixo ao mesmo ficheiro `funcoes.js` (não apagues o que já tens):
+
+```javascript
+// ==========================================
+// 2. ARROW FUNCTIONS (FUNÇÕES SETA) 🏹
+// ==========================================
+//
+// 🍳 ANALOGIA DO DIA-A-DIA:
+// Imagina uma receita de cozinha. Podes escrevê-la de forma
+// longa (com todos os detalhes) ou de forma curta (versão resumida).
+// As duas receitas fazem o mesmo prato — só a escrita é diferente!
+//
+// É EXATAMENTE isso que são as arrow functions:
+// - São a MESMA coisa que funções normais
+// - Escritas de forma MAIS CURTA
+// - Nada mais!
+//
+// Vê o exemplo abaixo. As duas funções fazem EXATAMENTE o mesmo:
+
+// VERSÃO NORMAL (a que já conheces)
+function dobrarNormal(numero) {
+  return numero * 2;
+}
+
+// VERSÃO ARROW (a mesma coisa, mais curta)
+// Lê o => como "que faz isto" ou "que devolve"
+const dobrarArrow = (numero) => {
+  return numero * 2;
+};
+
+// Vê que o resultado é IGUAL nas duas!
+console.log('Versão normal:', dobrarNormal(5));  // 10
+console.log('Versão arrow: ', dobrarArrow(5));   // 10
+// ↑ São iguais! A arrow function não é nenhum bicho-de-sete-cabeças 😄
+
+// ---
+// COMO LER UMA ARROW FUNCTION:
+//
+// const dobrarArrow = (numero) => { return numero * 2; };
+//       ↑                ↑     ↑           ↑
+//   nome da função   parâmetro  =>    o que faz / devolve
+//
+// O => lê-se como "que faz isto" ou "que recebe X e devolve..."
+// ---
+
+// Mais um exemplo com dois parâmetros:
+// VERSÃO NORMAL
+function somarNormal(a, b) {
+  return a + b;
+}
+
+// VERSÃO ARROW — exatamente o mesmo!
+const somarArrow = (a, b) => {
   return a + b;
 };
 
-console.log(soma(3, 5)); // 8
+console.log('Soma normal:', somarNormal(3, 4)); // 7
+console.log('Soma arrow: ', somarArrow(3, 4));  // 7
+// ↑ Mesmo resultado! Apenas escrita diferente.
+```
 
-// Se a função só tem uma linha, podemos simplificar:
-const dobro = (x) => x * 2;
+Corre com:
+```bash
+node funcoes.js
+```
 
-console.log(dobro(4));  // 8
-console.log(dobro(10)); // 20
+---
 
+> ✅ Viste os mesmos resultados nas duas versões? Ótimo! A ideia principal é: **arrow function = função normal, mas escrita de forma mais curta.**
+
+---
+
+Continua a **adicionar** ao ficheiro `funcoes.js`:
+
+```javascript
 // ==========================================
-// 3. FUNÇÕES COM OBJETOS
+// 3. FUNÇÕES COM OBJETOS 📦
 // ==========================================
+//
+// 🎫 ANALOGIA DO DIA-A-DIA:
+// Imagina uma máquina de fazer cartões de identificação.
+// Tu metes o nome da pessoa → a máquina imprime um cartão com o nome preenchido.
+// Tu metes o nome E a idade → a máquina imprime um cartão com tudo preenchido.
+//
+// Uma função pode fazer exatamente isso: receber dados e devolver um objeto!
 
-const criarMensagem = (texto, prioridade) => {
+// PASSO 1: Relembrar o que é um objeto (já aprendeste no Dia 4!)
+// Um objeto é como uma caixa com etiquetas (propriedades):
+const pessoa = {
+  nome: 'Miguel',
+  idade: 25,
+};
+console.log('O objeto pessoa:', pessoa);
+// Resultado: { nome: 'Miguel', idade: 25 }
+
+// ---
+
+// PASSO 2: Uma função que recebe UM valor e devolve um objeto
+// É como a máquina de cartões — metes só o nome, sai o cartão!
+function criarCartaoSoComNome(nome) {
+  // Esta função recebe um nome (texto simples)
+  // e devolve um objeto com esse nome
   return {
-    texto: texto,
-    prioridade: prioridade,
-    dataCriacao: new Date().toLocaleString('pt-PT'),
+    nome: nome, // a propriedade "nome" fica com o valor que passámos
+  };
+}
+
+const cartao1 = criarCartaoSoComNome('Ana');
+console.log('Cartão criado:', cartao1);
+// Resultado: { nome: 'Ana' }
+
+// Vê como funciona passo a passo:
+// 1. Chamámos criarCartaoSoComNome('Ana')
+// 2. Dentro da função, nome = 'Ana'
+// 3. A função devolve o objeto { nome: 'Ana' }
+// 4. Guardámos esse objeto em cartao1
+
+// ---
+
+// PASSO 3: Uma função que recebe DOIS valores e devolve um objeto
+// Agora a máquina de cartões aceita o nome E a idade!
+function criarCartao(nome, idade) {
+  // Recebe dois valores (nome e idade)
+  // Devolve um objeto com as duas propriedades
+  return {
+    nome: nome,
+    idade: idade,
+  };
+}
+
+const cartao2 = criarCartao('Carlos', 30);
+console.log('Cartão com nome e idade:', cartao2);
+// Resultado: { nome: 'Carlos', idade: 30 }
+
+const cartao3 = criarCartao('Beatriz', 22);
+console.log('Outro cartão:', cartao3);
+// Resultado: { nome: 'Beatriz', idade: 22 }
+
+// ---
+
+// PASSO 4: Agora com o projeto — uma função que cria uma mensagem!
+// Mesma ideia, mas agora as "propriedades" têm nomes do nosso projeto.
+// (Usamos arrow function aqui — lembra-te: é a mesma coisa que a versão normal!)
+const criarMensagem = (texto, prioridade) => {
+  // Recebe o texto da mensagem e a prioridade
+  // Devolve um objeto com essas informações + a data atual
+  return {
+    texto: texto,          // o texto que passámos
+    prioridade: prioridade, // a prioridade que passámos
+    dataCriacao: new Date().toLocaleString('pt-PT'), // data de agora
   };
 };
 
 const msg1 = criarMensagem('Acidente na Av. Roma', 'alta');
-console.log('Mensagem criada:', msg1);
+console.log('Mensagem 1:', msg1);
+// Resultado: { texto: 'Acidente na Av. Roma', prioridade: 'alta', dataCriacao: '...' }
 
 const msg2 = criarMensagem('Tudo normal', 'normal');
-console.log('Mensagem criada:', msg2);
+console.log('Mensagem 2:', msg2);
+// Resultado: { texto: 'Tudo normal', prioridade: 'normal', dataCriacao: '...' }
+```
 
-// ==========================================
-// 4. FUNÇÕES QUE CHAMAM OUTRAS FUNÇÕES
-// ==========================================
+Corre com:
+```bash
+node funcoes.js
+```
 
+---
+
+> ✅ Viste os objetos a ser criados? Cada vez que chamas a função com valores diferentes, ela cria um objeto novo com esses valores. É como a máquina de cartões — cada vez que metes dados diferentes, sai um cartão diferente!
+
+---
+
+Continua a **adicionar** ao ficheiro `funcoes.js`:
+
+```javascript
+// ==========================================
+// 4. FUNÇÕES QUE CHAMAM OUTRAS FUNÇÕES 🍽️
+// ==========================================
+//
+// 🍽️ ANALOGIA DO DIA-A-DIA:
+// Num restaurante, o empregado recebe o pedido do cliente.
+// O empregado não cozinha — chama o cozinheiro para isso.
+// O cozinheiro prepara o prato e devolve ao empregado.
+// O empregado leva o prato ao cliente.
+// Cada um faz a sua parte!
+//
+// Em código, é a mesma coisa: uma função pode chamar outra função
+// para fazer parte do trabalho.
+
+// PASSO 1: Criar cada função SOZINHA e testá-la individualmente
+
+// Esta função só faz UMA coisa: formata a prioridade
 const formatarPrioridade = (prioridade) => {
   if (prioridade === 'alta') {
     return '🔴 ALTA';
@@ -599,43 +766,336 @@ const formatarPrioridade = (prioridade) => {
   }
 };
 
+// Testa a função sozinha — vai a tabela de cozinha antes de ir ao restaurante!
+console.log('Testar formatarPrioridade:');
+console.log(formatarPrioridade('alta'));   // 🔴 ALTA
+console.log(formatarPrioridade('normal')); // 🟢 Normal
+// ↑ Funciona sozinha!
+
+// PASSO 2: Criar a segunda função, que usa a primeira
+// Esta função mostra uma mensagem — e chama formatarPrioridade para formatar a prioridade
 const mostrarMensagem = (mensagem) => {
+  // PASSO A: Primeiro, chamamos a outra função para formatar a prioridade
   const prioFormatada = formatarPrioridade(mensagem.prioridade);
+  console.log('(dentro de mostrarMensagem) prioFormatada =', prioFormatada);
+
+  // PASSO B: Agora usamos o resultado para mostrar a mensagem completa
   console.log(`[${prioFormatada}] ${mensagem.texto}`);
 };
 
-mostrarMensagem(msg1); // [🔴 ALTA] Acidente na Av. Roma
-mostrarMensagem(msg2); // [🟢 Normal] Tudo normal
+// PASSO 3: Agora juntamos as duas — testar com as mensagens criadas antes
+console.log('\nMostrar mensagens:');
+mostrarMensagem(msg1);
+// O que acontece passo a passo:
+// 1. mostrarMensagem recebe o objeto msg1
+// 2. Dentro da função, chama formatarPrioridade('alta')
+// 3. formatarPrioridade devolve '🔴 ALTA'
+// 4. mostrarMensagem usa '🔴 ALTA' para mostrar '[🔴 ALTA] Acidente na Av. Roma'
 
-// ==========================================
-// 5. MÉTODOS DE ARRAYS ÚTEIS
-// ==========================================
-
-const numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
-// .filter() — filtra elementos que cumprem uma condição
-const pares = numeros.filter((n) => n % 2 === 0);
-console.log('Pares:', pares); // [2, 4, 6, 8, 10]
-
-// .map() — transforma cada elemento
-const dobros = numeros.map((n) => n * 2);
-console.log('Dobros:', dobros); // [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
-
-// .find() — encontra o primeiro elemento que cumpre a condição
-const primeiroMaiorQue5 = numeros.find((n) => n > 5);
-console.log('Primeiro > 5:', primeiroMaiorQue5); // 6
-
-// .forEach() — executa algo para cada elemento (sem devolver nada)
-console.log('\nTodos os números:');
-numeros.forEach((n) => {
-  console.log(`  - ${n}`);
-});
+mostrarMensagem(msg2);
+// Mesmo processo, mas com prioridade 'normal' → '🟢 Normal'
 ```
 
 Corre com:
 ```bash
 node funcoes.js
 ```
+
+---
+
+> ✅ Viste os `console.log` intermédios? Eles mostram-te o que está a acontecer dentro da função. **O segredo para perceber funções que chamam funções é sempre testá-las uma a uma primeiro!**
+
+---
+
+Continua a **adicionar** ao ficheiro `funcoes.js`:
+
+```javascript
+// ==========================================
+// 5. MÉTODOS DE ARRAYS ÚTEIS 🧰
+// ==========================================
+//
+// Os arrays têm "ferramentas" incorporadas chamadas métodos.
+// São funções que já existem e que podes usar nos teus arrays.
+// Vamos aprender 4: .filter(), .map(), .find(), .forEach()
+//
+// ⚠️ IMPORTANTE: Vamos aprender cada um DEVAGAR, com exemplos simples primeiro!
+
+// ==================
+// 5A. .filter() — "Escolher apenas alguns"
+// ==================
+//
+// ☕ ANALOGIA: Imagina que tens um saco com bolas de cores diferentes.
+// Queres escolher APENAS as bolas vermelhas. Filtras o saco!
+// .filter() faz exatamente isso: percorre o array e escolhe apenas
+// os elementos que cumprem uma condição.
+
+// --- Exemplo com números simples ---
+const numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+console.log('Array original:', numeros);
+
+// PASSO 1: Primeiro SEM arrow function — para perceberes o que está a acontecer
+// Esta função verifica se um número é par
+function ehPar(numero) {
+  return numero % 2 === 0; // % é o "resto da divisão". Se o resto for 0, é par!
+}
+
+// Testa a função sozinha:
+console.log('2 é par?', ehPar(2));  // true
+console.log('3 é par?', ehPar(3));  // false
+console.log('8 é par?', ehPar(8));  // true
+
+// Agora usa .filter() com essa função
+// .filter() vai chamar ehPar() para CADA número do array
+// Se ehPar() devolver true → o número fica no resultado
+// Se ehPar() devolver false → o número é excluído
+const paresSemArrow = numeros.filter(ehPar);
+console.log('Números pares (sem arrow):', paresSemArrow); // [2, 4, 6, 8, 10]
+
+// PASSO 2: Agora COM arrow function — é a mesma coisa, mais curta!
+// Em vez de definir a função ehPar separada, escrevemos a lógica diretamente
+const paresComArrow = numeros.filter((n) => n % 2 === 0);
+console.log('Números pares (com arrow): ', paresComArrow); // [2, 4, 6, 8, 10]
+// ↑ Mesmo resultado! Só a escrita é diferente.
+
+// --- Mini-exercício 1 ---
+// Tenta filtrar apenas os números MAIORES QUE 5:
+const maioresQue5 = numeros.filter((n) => n > 5);
+console.log('Maiores que 5:', maioresQue5); // [6, 7, 8, 9, 10]
+
+// --- Exemplo com strings ---
+const frutas = ['maçã', 'banana', 'manga', 'mirtilo', 'melão'];
+// Filtrar apenas as frutas que começam com 'm'
+const frutasComM = frutas.filter((fruta) => fruta.startsWith('m'));
+console.log('Frutas com "m":', frutasComM); // ['manga', 'mirtilo', 'melão']
+
+// ==================
+// 5B. .map() — "Transformar cada elemento"
+// ==================
+//
+// 🏭 ANALOGIA: Imagina uma fábrica de sumos.
+// Entra uma fila de laranjas → a máquina espreme cada uma → sai uma fila de sumos.
+// .map() faz o mesmo: pega em CADA elemento do array, transforma-o,
+// e devolve um array NOVO com os elementos transformados.
+// O array original NÃO muda!
+
+// --- Exemplo com números simples ---
+const numerosMap = [1, 2, 3, 4, 5];
+console.log('\nArray original (map):', numerosMap);
+
+// PASSO 1: SEM arrow function
+function triplicar(numero) {
+  return numero * 3;
+}
+
+const triplosSemArrow = numerosMap.map(triplicar);
+console.log('Triplicados (sem arrow):', triplosSemArrow); // [3, 6, 9, 12, 15]
+
+// PASSO 2: COM arrow function — mesma coisa, mais curta
+const triplosComArrow = numerosMap.map((n) => n * 3);
+console.log('Triplicados (com arrow): ', triplosComArrow); // [3, 6, 9, 12, 15]
+
+// --- Mini-exercício 2 ---
+// Tenta criar um array onde cada número é somado com 10:
+const mais10 = numerosMap.map((n) => n + 10);
+console.log('Cada número + 10:', mais10); // [11, 12, 13, 14, 15]
+
+// --- Exemplo com strings ---
+const nomes = ['miguel', 'ana', 'carlos'];
+// Transformar todos os nomes para maiúsculas
+const nomesGrandes = nomes.map((nome) => nome.toUpperCase());
+console.log('Nomes em maiúsculas:', nomesGrandes); // ['MIGUEL', 'ANA', 'CARLOS']
+
+// ==================
+// 5C. .find() — "Procurar um elemento específico"
+// ==================
+//
+// 🔍 ANALOGIA: Imagina uma fila de pessoas numa bilheteira.
+// Procuras alguém chamado "Carlos". Percorres a fila do início
+// e PARAS logo que encontras o primeiro "Carlos".
+// .find() faz o mesmo: devolve o PRIMEIRO elemento que cumpre a condição.
+// (Se não encontrar nada, devolve undefined)
+
+// --- Exemplo com números simples ---
+const numerosFind = [3, 7, 2, 9, 5, 1, 8];
+console.log('\nArray para find:', numerosFind);
+
+// PASSO 1: SEM arrow function
+function ehMaiorQue6(numero) {
+  return numero > 6;
+}
+
+const primeiroBigSemArrow = numerosFind.find(ehMaiorQue6);
+console.log('Primeiro maior que 6 (sem arrow):', primeiroBigSemArrow); // 7
+// ↑ É 7, porque é o PRIMEIRO da lista que é > 6 (não o maior de todos!)
+
+// PASSO 2: COM arrow function
+const primeiroBigComArrow = numerosFind.find((n) => n > 6);
+console.log('Primeiro maior que 6 (com arrow): ', primeiroBigComArrow); // 7
+
+// --- Mini-exercício 3 ---
+// Tenta encontrar o primeiro número PAR:
+const primeiroPar = numerosFind.find((n) => n % 2 === 0);
+console.log('Primeiro número par:', primeiroPar); // 2
+
+// --- Exemplo com strings ---
+const animais = ['cão', 'gato', 'peixe', 'coelho', 'gato'];
+// Encontrar o primeiro animal chamado 'gato'
+const primeiroGato = animais.find((animal) => animal === 'gato');
+console.log('Primeiro gato encontrado:', primeiroGato); // 'gato'
+
+// ==================
+// 5D. .forEach() — "Fazer algo a cada elemento"
+// ==================
+//
+// 👋 ANALOGIA: Imagina que entras numa sala com várias pessoas.
+// Cumprimentas cada uma delas, uma a uma. Não estás a criar nada novo,
+// não estás a filtrar ninguém — estás simplesmente a fazer algo a cada pessoa.
+// .forEach() faz o mesmo: percorre o array e executa uma ação
+// para CADA elemento. NÃO devolve um array novo — só executa código!
+
+// --- Exemplo com números simples ---
+const numerosForEach = [10, 20, 30];
+console.log('\n--- forEach com números ---');
+
+// PASSO 1: SEM arrow function
+function mostrarNumero(numero) {
+  console.log('O número é:', numero);
+}
+
+numerosForEach.forEach(mostrarNumero);
+// O número é: 10
+// O número é: 20
+// O número é: 30
+
+// PASSO 2: COM arrow function
+console.log('--- forEach com arrow ---');
+numerosForEach.forEach((n) => {
+  console.log('Número:', n);
+});
+// Mesmo resultado!
+
+// --- Mini-exercício 4 ---
+const cidades = ['Lisboa', 'Porto', 'Faro'];
+// Mostrar cada cidade com uma mensagem
+cidades.forEach((cidade) => {
+  console.log('Cidade:', cidade);
+});
+// Cidade: Lisboa
+// Cidade: Porto
+// Cidade: Faro
+```
+
+Corre com:
+```bash
+node funcoes.js
+```
+
+---
+
+> ✅ Se viste todos os resultados, parabéns! Agora vamos juntar tudo num exercício final.
+
+---
+
+Continua a **adicionar** ao ficheiro `funcoes.js`:
+
+```javascript
+// ==========================================
+// 6. EXERCÍCIO FINAL — JUNTA TUDO! 🏆
+// ==========================================
+//
+// Vamos criar um programa completo que usa TUDO o que aprendemos hoje:
+// - Funções clássicas
+// - Arrow functions
+// - Funções com objetos
+// - Funções que chamam funções
+// - .filter(), .map(), .find(), .forEach()
+//
+// O programa vai trabalhar com uma lista de mensagens — igual ao nosso projeto!
+
+console.log('\n==============================');
+console.log('   SISTEMA DE MENSAGENS 🚦');
+console.log('==============================\n');
+
+// PASSO 1: Criar uma função que faz mensagens (função com objeto)
+// É como a nossa "máquina de cartões" — metes dados, sai uma mensagem!
+const criarMensagemFinal = (texto, prioridade) => {
+  return {
+    id: Math.floor(Math.random() * 1000), // número aleatório como identificador
+    texto: texto,
+    prioridade: prioridade,
+  };
+};
+
+// PASSO 2: Criar uma lista de mensagens usando a função acima
+// (Estamos a chamar a função várias vezes para criar vários objetos)
+const listaMensagens = [
+  criarMensagemFinal('Acidente na Av. Roma', 'alta'),
+  criarMensagemFinal('Trânsito normal na Marginal', 'normal'),
+  criarMensagemFinal('Avaria no autocarro 735', 'alta'),
+  criarMensagemFinal('Tudo ok na linha 28', 'normal'),
+  criarMensagemFinal('Fecho da Ponte 25 de Abril', 'alta'),
+];
+
+console.log('Todas as mensagens:');
+// .forEach() — percorrer cada mensagem e mostrá-la
+listaMensagens.forEach((msg) => {
+  console.log(' -', msg.texto, '| Prioridade:', msg.prioridade);
+});
+
+// PASSO 3: Filtrar apenas as mensagens urgentes (prioridade 'alta')
+// .filter() — como escolher bolas de cor específica do saco
+const mensagensUrgentes = listaMensagens.filter((msg) => msg.prioridade === 'alta');
+console.log('\nMensagens urgentes (', mensagensUrgentes.length, 'no total):');
+mensagensUrgentes.forEach((msg) => {
+  console.log(' 🔴', msg.texto);
+});
+
+// PASSO 4: Transformar os textos para maiúsculas usando .map()
+// .map() — como a fábrica que transforma cada item
+const textosEmMaiusculas = listaMensagens.map((msg) => msg.texto.toUpperCase());
+console.log('\nTextos em maiúsculas:');
+textosEmMaiusculas.forEach((texto) => {
+  console.log(' -', texto);
+});
+
+// PASSO 5: Encontrar a primeira mensagem urgente com .find()
+// .find() — como procurar alguém específico numa fila
+const primeiraUrgente = listaMensagens.find((msg) => msg.prioridade === 'alta');
+console.log('\nPrimeira mensagem urgente encontrada:');
+console.log(' -', primeiraUrgente.texto);
+
+// PASSO 6: Função que formata e mostra uma mensagem (funções que chamam funções)
+// Função auxiliar (o "cozinheiro" do restaurante)
+const formatarEmoji = (prioridade) => {
+  if (prioridade === 'alta') {
+    return '🔴';
+  } else {
+    return '🟢';
+  }
+};
+
+// Função principal (o "empregado" do restaurante — chama o cozinheiro)
+const apresentarMensagem = (msg) => {
+  const emoji = formatarEmoji(msg.prioridade); // chama a função auxiliar
+  console.log(`${emoji} [ID: ${msg.id}] ${msg.texto}`);
+};
+
+console.log('\nLista formatada de todas as mensagens:');
+listaMensagens.forEach((msg) => {
+  apresentarMensagem(msg); // para cada mensagem, chama a função de apresentação
+});
+
+console.log('\n✅ Programa concluído! Usaste funções, objetos, filter, map, find e forEach!');
+```
+
+Corre com:
+```bash
+node funcoes.js
+```
+
+---
+
+> 🎉 **Parabéns!** Se chegaste até aqui e o código correu sem erros, já percebeste os conceitos fundamentais de funções em JavaScript. Estas ferramentas vão aparecer em todo o lado no NestJS e no Vue.js — e agora já as conheces!
 
 ---
 
