@@ -1,0 +1,114 @@
+// interfaces.ts
+// Aprender interfaces — definir a forma dos objetos
+
+// ==========================================
+// 1. INTERFACES BÁSICAS
+// ==========================================
+
+// Uma interface define que campos um objeto DEVE ter
+interface Pessoa {
+  nome: string;
+  idade: number;
+  cidade: string;
+}
+
+// Agora, se criarmos um objeto do tipo Pessoa, TEM de ter estes 3 campos:
+const miguel: Pessoa = {
+  nome: 'Miguel',
+  idade: 18,
+  cidade: 'Lisboa',
+};
+
+// Isto daria erro:
+// const joao: Pessoa = { nome: 'João' }; // ❌ Faltam idade e cidade!
+
+console.log('Miguel:', miguel);
+
+// ==========================================
+// 2. CAMPOS OPCIONAIS — o ponto de interrogação ?
+// ==========================================
+
+interface Mensagem {
+  id: number;
+  texto: string;
+  prioridade: 'normal' | 'alta'; // Só pode ser 'normal' OU 'alta'
+  dataCriacao: Date;
+  lida?: boolean; // O ? torna o campo opcional
+}
+
+const msg1: Mensagem = {
+  id: 1,
+  texto: 'Acidente na Av. Roma',
+  prioridade: 'alta',
+  dataCriacao: new Date(),
+  // "lida" não é obrigatório porque tem ?
+};
+
+const msg2: Mensagem = {
+  id: 2,
+  texto: 'Tudo normal',
+  prioridade: 'normal',
+  dataCriacao: new Date(),
+  lida: true, // Mas podemos incluí-lo se quisermos
+};
+
+console.log('Mensagem 1:', msg1);
+console.log('Mensagem 2:', msg2);
+
+// ==========================================
+// 3. FUNÇÕES COM INTERFACES
+// ==========================================
+
+// Função que recebe uma Mensagem e devolve uma string formatada
+const formatarMensagem = (msg: Mensagem): string => {
+  const prioIcone = msg.prioridade === 'alta' ? '🔴' : '🟢';
+  const data = msg.dataCriacao.toLocaleString('pt-PT');
+  return `${prioIcone} [${data}] ${msg.texto}`;
+};
+
+console.log(formatarMensagem(msg1));
+console.log(formatarMensagem(msg2));
+
+// Função que filtra mensagens por prioridade
+const filtrarPorPrioridade = (
+  mensagens: Mensagem[],   // Array de Mensagem
+  prioridade: 'normal' | 'alta',
+): Mensagem[] => {           // Devolve Array de Mensagem
+  return mensagens.filter((m) => m.prioridade === prioridade);
+};
+
+const todasMensagens: Mensagem[] = [msg1, msg2];
+const urgentes = filtrarPorPrioridade(todasMensagens, 'alta');
+console.log('Urgentes:', urgentes);
+
+// ==========================================
+// 4. ENUMS — Listas de opções fixas
+// ==========================================
+
+// Um enum define um conjunto fixo de opções
+enum Prioridade {
+  NORMAL = 'normal',
+  ALTA = 'alta',
+}
+
+enum TipoUtilizador {
+  COORDENADOR = 'coordenador',
+  OPERADOR = 'operador',
+}
+
+interface Utilizador {
+  id: number;
+  nome: string;
+  email: string;
+  tipo: TipoUtilizador;
+}
+
+const admin: Utilizador = {
+  id: 1,
+  nome: 'Carlos',
+  email: 'carlos@carris.pt',
+  tipo: TipoUtilizador.COORDENADOR,
+};
+
+console.log('Admin:', admin);
+console.log('É coordenador?', admin.tipo === TipoUtilizador.COORDENADOR); // true

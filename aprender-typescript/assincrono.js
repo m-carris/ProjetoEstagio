@@ -62,4 +62,43 @@ const buscarMensagens = () => {
 };
 
 // Simular buscar uma mensagem por id
+const buscarMensagemPorId = (id) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const mensagem = baseDeDados.find(m => m.id === id);
+            if (mensagem) {
+                resolve(mensagem);
+            } else {
+                reject(`Mensagem com id ${id} não encontrada!`);
+            }
+        }, 500);
+    });
+};
+
+// Usar as funções assíncronas
+const testarMensagens = async () => {
+    console.log(`\n--- Teste de Mensagens ---`);
+};
+
+// Buscar todas
+const todas = await buscarMensagens();
+console.log(`Todas as mensagens:`, todas);
+
+// Buscar por id
+const msg = await buscarMensagemPorId(2);
+console.log(`Mensagem 2:`, msg);
+
+// Tratar erros com try/catch
+try {
+    const msgInexistente = await buscarMensagemPorId(99);
+    console.log(msgInexistente);
+} catch (erro) {
+    console.log(`Erro:`, erro);
+    // Resposta: Erro: Mensagem com id 99 não encontrada!
+};
+
+// Executar depois de 3 segundos (para não misturar com o exemplo anterior)
+setTimeout(() => {
+  testarMensagens();
+}, 3000);
 
